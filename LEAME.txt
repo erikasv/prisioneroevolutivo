@@ -1,0 +1,42 @@
+##########################  PRISIONERO EVOLUTIVO  #############################
+
+Creado por:
+^^^^^^^^^^^
+	- Victor Alberto Romero
+	- Carlos Andres Delgado
+
+Descripción:
+^^^^^^^^^^^^
+El problema a solucionar consiste en implementar el dilema del prisionero 
+utilizando jugadores evolutivos, es decir cuyo comportamiento evolucione de 
+acuerdo a las interacciones con otros jugadores
+
+#############################  INSTRUCCIONES  #################################
+
+Compilación:
+^^^^^^^^^^^^
+
+Para compilarlo se va a la carpeta "Código Fuente" y se ejecuta: 
+
+	$ make
+
+Ejecución:
+^^^^^^^^^^
+
+Para ejecutarlo se puede ejecutar directamente:
+
+	$ ./PrisioneroEvolutivo
+
+O con los parámetros:
+
+	$ ./PrisioneroEvolutivo <numGeneraciones> <numJugadores> <numJuegos>
+
+donde:
+
+	<numGeneraciones>   : Equivale al número de generaciones a iterar.
+
+	<numJugadores>	    : Equivale al número de jugadores de la población.
+
+	<numJuegos>	    : Equivale al número de juegos realizados entre un
+			      par de jugadores.
+

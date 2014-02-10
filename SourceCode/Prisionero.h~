@@ -1,0 +1,36 @@
+#ifndef PRISIONERO_H
+#define PRISIONERO_H
+#include "Jugador.h"
+#include "MatrizDePagos.h"
+class Prisionero
+{
+	/*
+	 * Grupo de jugadores
+	 */
+	Jugador * jugadores;
+	/*
+	 * Total de jugadores
+	 */
+	 int totalDeJugadores;
+	 /*
+	  * Matriz de pagos
+	  */
+	  MatrizDePagos * matrizDePagos;
+public:
+
+
+    Prisionero(int numero);
+    ~Prisionero();
+    
+    void iniciarMatrizDePagos(int T, int R, int P, int S);
+
+    void jugar(int numeroVecesJueganAyB);
+    
+    /*
+     * cruzarJugadores();
+     * mutarJugadores();
+     */
+
+};
+
+#endif // PRISIONERO_H
