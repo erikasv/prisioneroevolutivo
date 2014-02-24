@@ -81,14 +81,14 @@ Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
 			
 			Podria ser:
 
-				a. Se tomarian los 20 primeros de A y luego los 60 ultimos de
-				B, recordad que la tabla de estados esta en orden.
+			1. Se tomarian los 20 primeros de A y luego los 60 ultimos de B, 
+			   recordad que la tabla de estados esta en orden.
 
-				b. Se tomarian los 20 primeros de B, luego los 20 ultimos de A
-				y finalmente los 40 ultimos de B.
+			2. Se tomarian los 20 primeros de B, luego los 20 ultimos de A y 
+			   finalmente los 40 ultimos de B.
 
-				c. Otra combinacion pero..., tomar en cuenta que los estados de
-				A no pueden estar más alla del estado 40 del hijo.
+			3. Otra combinacion pero..., tomar en cuenta que los estados de	A 
+			   no pueden estar más alla del estado 40 del hijo.
 	
 	- Mutar:
 	    Propuesta: Tomar 10% de los estados, aleatoriamente (sin tomar el
