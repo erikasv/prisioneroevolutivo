@@ -3,14 +3,11 @@ Prisionero Evolutivo
 
 Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
 
-# Creado por:
+## Creado por:
 	- Victor Alberto Romero
 	- Carlos Andres Delgado
 
-
-# ///////////////////////////////////////////////////////////////////////// #
-#                                   Notas                                   #
-# ///////////////////////////////////////////////////////////////////////// #
+# Notas
 
 ## Implementado:
 
@@ -22,9 +19,7 @@ Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
 - Función de visualización
 - Menú en el main
 
-# ///////////////////////////////////////////////////////////////////////// #
-#                               Modelo teórico                              #
-# ///////////////////////////////////////////////////////////////////////// #
+# Modelo teórico
 
 1. Los cromosomas se modelaran como una matriz de enteros de cuatro columnas,
    por un numero variable de filas. Esto será implementado usando cuatro
@@ -73,9 +68,9 @@ Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
 		Nota: En este caso el numero de estados del hijo debe ser el promedio
 		entre ambos
 		
-		Ejemplo:
+		* Ejemplo:
 
-			JugadorA Tiene 40 estados.
+		    JugadorA Tiene 40 estados.
 			JugadorB tiene 120 estados.
 			
 			Si el valor es impar, tomar piso como mitad.
@@ -96,11 +91,12 @@ Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
 				A no pueden estar más alla del estado 40 del hijo.
 	
 	- Mutar:
-		Propuesta: Tomar 10% de los estados, aleatoriamente (sin tomar el
+	    Propuesta: Tomar 10% de los estados, aleatoriamente (sin tomar el
 		mismo) cambiar salida y los dos Proximos Estados por un valor aleatorio
 		
-		Ejemplo:
-			Hijo tiene 40 estados
+	    * Ejemplo:
+
+		    Hijo tiene 40 estados
 			10% son 4, digamos que seleccionaron 1, 4, 16, 22
 			
 			Hijo[1 - 1] = [1 1 12 12] Se representa asi [1 X Y Z]  X va entre 0
