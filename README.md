@@ -26,25 +26,24 @@ Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
    vectores. El primero vector poseerá los datos del estado actual, el segundo
    los de la jugada del oponente, el tercero la PRÓXIMA jugada propia y el 
    cuarto el próximo estado.
+    - Notación
+        Estado      := [ESTADOPRESENTE SALIDAEP PROXIMOESTADOSICOOPERAN 
+                        PROXIMOESTADOSITRAICIONAN]
+        Traicionar  := 0
+        Cooperar    := 1
 
+    - Numero de estados: entre 1 y 200 (este valor esta dentro de Jugador.cpp).
 
-    Estado      := [ESTADOPRESENTE SALIDAEP PROXIMOESTADOSICOOPERAN 
-                PROXIMOESTADOSITRAICIONAN]
-    Traicionar  := 0
-    Cooperar    := 1
-
-    Numero de estados: entre 1 y 200 (este valor esta dentro de Jugador.cpp).
-
-    La matriz de pagos es la misma de las guias, pero puede cambiar (Recordar 
-    reglas). Esta definida en el main.
+    - La matriz de pagos es la misma de las guias, pero puede cambiar (Recordar 
+      reglas). Esta definida en el main.
 
     - La tabla de estados esta organizada de tal forma:
 
-      [ [1 X X X]
-        [2 X X X]
-	       .
-	       .
-	    [N X X X] ]
+        [   [1 X X X]
+            [2 X X X]
+	            .
+	            .
+	        [N X X X] ]
 
     - Para acceder a un estado conocido, solo basta con EstadoPresente - 1 
       (Porque el Vector esta indexado desde 0)
