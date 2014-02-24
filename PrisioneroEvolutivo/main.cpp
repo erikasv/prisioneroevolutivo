@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Prisionero.h"
 #include <time.h> 
+#include <unistd.h>
 
 using namespace std;
 
