@@ -28,37 +28,34 @@ Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
    cuarto el próximo estado.
 
 
-Estado      := [ESTADOPRESENTE SALIDAEP PROXIMOESTADOSICOOPERAN 
+    Estado      := [ESTADOPRESENTE SALIDAEP PROXIMOESTADOSICOOPERAN 
                 PROXIMOESTADOSITRAICIONAN]
-Traicionar  := 0
-Cooperar    := 1
+    Traicionar  := 0
+    Cooperar    := 1
 
-Numero de estados: entre 1 y 200 (este valor esta dentro de Jugador.cpp).
+    Numero de estados: entre 1 y 200 (este valor esta dentro de Jugador.cpp).
 
-La matriz de pagos es la misma de las guias, pero puede cambiar (Recordar 
-reglas). Esta definida en el main.
+    La matriz de pagos es la misma de las guias, pero puede cambiar (Recordar 
+    reglas). Esta definida en el main.
 
-La tabla de estados esta organizada de tal forma:
+    - La tabla de estados esta organizada de tal forma:
 
-[
-	[1 X X X]
-	[2 X X X]
-	.
-	.
-	[N X X X]
-]
+      [ [1 X X X]
+        [2 X X X]
+	       .
+	       .
+	    [N X X X] ]
 
-Para acceder a un estado conocido, solo basta con EstadoPresente - 1 (Porque el
-Vector esta indexado desde 0)
+    - Para acceder a un estado conocido, solo basta con EstadoPresente - 1 
+      (Porque el Vector esta indexado desde 0)
 
-Poblacion inicial: 40 (Mirar main.cpp)
+    - Poblacion inicial: 40 (Mirar main.cpp)
 
-Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
+    - Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
 
 2. Para generar la mutación y la primer generación, se creará un estado
    aleatório, si el estado ya existe pues se usa el existente, sino se crea el
    nuevo.
-
     - Cruzar: 
 	
 		Mirar lo de superpoblacion (Cuantos hijos tienen cada jugador)
@@ -109,12 +106,10 @@ Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
    aplicar la función de amptitud.
 
 4. Función de visualización.
-
     - Ganancia de cada jugador
     - Maquina de estados de cada jugador 
 
 5. Funcion de aptitud.
-
     - Para valores altos de numero de veces que juegan dos jugadores
       GananciaJugador >> Numero estados promedio
     - Aptitud = GananciaJugador - Numero estados promedio
