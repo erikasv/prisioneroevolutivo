@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 //	Parámetros modificables mediante entrada
 	int numeroGeneraciones= 1000;
 	int numeroJugadores = 50;
-	int cantidadDeJuegos=100;
+	int cantidadDeJuegos=100; //ERIKA: CAMBIAR ESTO POR PROBABILIDAD DE ENCUENTROS. VER LIBRO PARA COMPROBAR VALOR.
 
 	if(argc==4)
 	{
@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
 	}
 
 //	Parámetros modificables en ejecución
-	int numeroInicialEstados=200;
-	double porcentajeSobrevive=0.6;
+	int numeroInicialEstados=200; //ERIKA: PORQUE ESE VALOR???
+	double porcentajeSobrevive=0.6; //Debería llamarse matingpool :P
 	double porcentajeMutacion=0.1;
 
 	char respuesta;
