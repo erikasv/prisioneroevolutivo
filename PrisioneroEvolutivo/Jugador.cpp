@@ -7,10 +7,10 @@
  
 Jugador::Jugador(int numMaximoEstados)
 {
-    maquinaDeEstados = new MaquinaDeEstados();
+	maquinaDeEstados = new MaquinaDeEstados();
 	numeroEstados = rand()%numMaximoEstados + 1;
-    gananciaJugador = 0;
-    estado = new Estado(numeroEstados);
+	gananciaJugador = 0;
+	estado = new Estado(numeroEstados);
 }
 
 Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN)
@@ -34,11 +34,11 @@ void Jugador::jugadaOponente(int jugada)
 }
 
 /*
- * Este método sirve para obtener la jugada del estado presente
- */
+* Este método sirve para obtener la jugada del estado presente
+*/
 int Jugador::miJugada()
 {
-    return maquinaDeEstados->obtenerSalidaEstadoPresente();
+	return maquinaDeEstados->obtenerSalidaEstadoPresente();
 }
 
 /*
@@ -89,8 +89,8 @@ void Jugador::resetearGanancia()
 }
 
 /*
- * Devuelve la maquina de estados
- */
+* Devuelve la maquina de estados
+*/
 MaquinaDeEstados* Jugador::obtenerMaquinaEstados()
 {
 	return maquinaDeEstados;

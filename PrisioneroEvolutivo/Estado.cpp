@@ -10,13 +10,13 @@
 
 Estado::Estado(int numeroEstados)
 {
-    this->numeroEstados = numeroEstados;
-    estadoPE = new int(4);
-    estadoActual=0;
+	this->numeroEstados = numeroEstados;
+	estadoPE = new int(4);
+	estadoActual=0;
 }
+
 Estado::~Estado()
 {
-
 }
 
 /*

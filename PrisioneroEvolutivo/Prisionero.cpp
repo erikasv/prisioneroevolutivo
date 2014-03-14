@@ -1,30 +1,29 @@
 /*
- * Clase para realizar el proceso de juego, evolución y mutación de una
- * población de jugadores
- */
+* Clase para realizar el proceso de juego, evolución y mutación de una
+* población de jugadores
+*/
 #include "Prisionero.h"
 
 /*
- * Contructor
- * Inicializa los jugadores
- */
-Prisionero::Prisionero(int numero, int numMaximoEstados)
+* Contructor
+* Inicializa los jugadores
+*/
+Prisionero::Prisionero(int numeroJugadores, int numMaximoEstados)
 {
-    /*
-     * Crear jugadores e inicializar su máquina de estados
-     */
-    for(int i=0; i<numero; i++)
-    {
+	/*
+	* Crear jugadores e inicializar su máquina de estados
+	*/
+	for(int i=0; i<numeroJugadores; i++)
+	{
 		Jugador* tmp = new Jugador(numMaximoEstados);
 		tmp->iniciarJugador();
+		jugadores.append(tmp);
+		//cout << jugadores.at(i) <<endl;
+	}
 
-        jugadores.append(tmp);
-        //cout << jugadores.at(i) <<endl;
-    }
-
-    totalDeJugadores = numero;
-	maximoPoblacion = numero;
-	maximoEstados=numMaximoEstados;
+	totalDeJugadores = numeroJugadores;
+	maximoPoblacion = numeroJugadores;
+	maximoEstados = numMaximoEstados;
 }
 
 Prisionero::~Prisionero()
@@ -32,50 +31,56 @@ Prisionero::~Prisionero()
 }
 
 /*
- * Este metodo inicia la matriz de pagos
- */
+* Este metodo inicia la matriz de pagos
+*/
 void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 {
 	matrizDePagos = new MatrizDePagos(T,R,P,S);
 }
 
+void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
+{
+	iniciarMatrizDePagos(TC, CC, TT, CT);
+	jugar(cantidadDeJuegos);
+	limpiarEstadosJugadores();
+}
+
 /*
- * Este metodo pone a jugar todos contra todos
- * Juega 1 contra 2,3,..,N
- * Juega 2 contra 3,4...,N
- * .
- * .
- * Juega N-1 contra N
- */
+* Este metodo pone a jugar todos contra todos
+* Juega 1 contra 2,3,..,N
+* Juega 2 contra 3,4...,N
+* .
+* .
+* Juega N-1 contra N
+*/
 void Prisionero::jugar(int cantidadDeJuegos)
 {
-    for(int i=0; i<totalDeJugadores; i++)
-    {
-        for(int j=i+1; j<totalDeJugadores; j++)
-        {
-            Jugador * jugadorA = jugadores.at(i);
-            Jugador * jugadorB = jugadores.at(j);
-
+	for(int i=0; i<totalDeJugadores; i++)
+	{
+		for(int j=i+1; j<totalDeJugadores; j++)
+		{
+			Jugador * jugadorA = jugadores.at(i);
+			Jugador * jugadorB = jugadores.at(j);
 			jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente();
 			jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
-            	
-            for (int var = 0; var < cantidadDeJuegos; var++)
-            {
+			
+			for (int var = 0; var < cantidadDeJuegos; var++)
+			{
 				//Juguemos
 				//Jugada estado presente
 				int jugadaJugadorA = jugadorA->miJugada();
 				int jugadaJugadorB = jugadorB->miJugada();
+				
+				//Pasemos al proximo estado
+				jugadorA->jugadaOponente(jugadaJugadorB);
+				jugadorB->jugadaOponente(jugadaJugadorA);
 
-                //Pasemos al proximo estado
-                jugadorA->jugadaOponente(jugadaJugadorB);
-                jugadorB->jugadaOponente(jugadaJugadorA);
-
-                //Ganancias para cada uno
-                jugadorA->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB));
-                jugadorB->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA));                
-            }
-        }
-    }
+				//Ganancias para cada uno
+				jugadorA->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB));
+				jugadorB->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA));                
+			}
+		}
+	}
 }
 
 /*
@@ -396,13 +401,6 @@ QVector<Jugador *> Prisionero::mezclar(QVector<Jugador *> entrada1, QVector<Juga
 	}
 
 	return salida;
-}
-
-void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
-{
-	iniciarMatrizDePagos(TC, CC, TT, CT);
-	jugar(cantidadDeJuegos);
-	limpiarEstadosJugadores();
 }
 
 void Prisionero::evolucionar(int numeroGeneraciones, int numeroJugadores, int cantidadDeJuegos, double porcentajeSobrevive, double porcentajeMutacion)

@@ -1,18 +1,18 @@
 /*
- * Carlos Andres Delgado
- * Victor Alberto Romero
- * 
- * Esta clase se utiliza para almacenar la matriz de pagos y retornar
- * los puntos por jugador de acuerdo a alguna jugada
- */
- #include "MatrizDePagos.h"
- 
+* Carlos Andres Delgado
+* Victor Alberto Romero
+* 
+* Esta clase se utiliza para almacenar la matriz de pagos y retornar
+* los puntos por jugador de acuerdo a alguna jugada
+*/
+#include "MatrizDePagos.h"
+
 MatrizDePagos::MatrizDePagos(int T, int R, int P, int S)
 {
-    this->T = T;
-    this->R = R;
-    this->P = P;
-    this->S = S;
+	this->T = T;
+	this->R = R;
+	this->P = P;
+	this->S = S;
 }
 
 MatrizDePagos::~MatrizDePagos()
@@ -49,7 +49,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 }
                 break;
 
-        default: return 0; break; //Estos return 0 son para evitar el warning
+				default: return 0; break; //Estos return 0 son para evitar el warning ERIKA:???
     }
     return 0;
 }
