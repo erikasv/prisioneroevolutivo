@@ -38,13 +38,6 @@ void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 	matrizDePagos = new MatrizDePagos(T,R,P,S);
 }
 
-void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
-{
-	iniciarMatrizDePagos(TC, CC, TT, CT);
-	jugar(cantidadDeJuegos);
-	limpiarEstadosJugadores();
-}
-
 /*
 * Este metodo pone a jugar todos contra todos
 * Juega 1 contra 2,3,..,N
@@ -61,7 +54,7 @@ void Prisionero::jugar(int cantidadDeJuegos)
 		{
 			Jugador * jugadorA = jugadores.at(i);
 			Jugador * jugadorB = jugadores.at(j);
-			jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente();
+			jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente(); //Jugador debería tener el metodo resetearEstadoPresente() y él hacer el llamado a la máquina de estados.
 			jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
 			
 			for (int var = 0; var < cantidadDeJuegos; var++)
@@ -75,6 +68,7 @@ void Prisionero::jugar(int cantidadDeJuegos)
 				jugadorA->jugadaOponente(jugadaJugadorB);
 				jugadorB->jugadaOponente(jugadaJugadorA);
 
+				/** INTRODUCIR PARAMETROS AQUI*/
 				//Ganancias para cada uno
 				jugadorA->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB));
 				jugadorB->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA));                
@@ -83,22 +77,76 @@ void Prisionero::jugar(int cantidadDeJuegos)
 	}
 }
 
-/*
- * Este método devuelve el mejor jugador actual
- */
-Jugador* Prisionero::obtenerMejorJugador()
+/**QUITAR ESTA FUNCIÓN, REDUCIR EL NÚMERO MÁXIMO DE ESTADOS PARA EVITAR QUE LAS 
+* MAQUINAS CREZCAN MUCHO. IGUALMENTE SE PUEDE CONSERVAR PARA FINES DE ANÁLISIS*/
+void Prisionero::limpiarEstadosJugadores()
 {
-	Jugador* mejorJugador = jugadores.at(0);
-	for (int i = 1; i < jugadores.size(); ++i)
+	int estadosMaximos = jugadores.at(0)->obtenerNumeroEstados();
+
+	for (int i = 1; i < totalDeJugadores; ++i)
 	{
-		if(jugadores.at(i)->obtenerGanancia()>mejorJugador->obtenerGanancia())
-			mejorJugador=jugadores.at(i);
+		if(estadosMaximos < jugadores.at(i)->obtenerNumeroEstados())
+			estadosMaximos = jugadores.at(i)->obtenerNumeroEstados();
 	}
-	return mejorJugador;
+
+	estadosMaximos++;
+
+	int* estadosUtiles = new int[estadosMaximos];
+
+	for (int i = 0; i < totalDeJugadores; ++i)
+	{
+		for (int j = 0; j < estadosMaximos; j++)
+			estadosUtiles[j]=0;
+
+		auxRecursionLimpiarEstados(estadosUtiles, 1, i);
+
+		int numEstadosUtiles=0;
+
+		for (int j = 0; j < estadosMaximos; ++j)
+		{
+			numEstadosUtiles += estadosUtiles[j];
+			if(estadosUtiles[j]==1)
+				estadosUtiles[j]=numEstadosUtiles;
+		}
+
+		MaquinaDeEstados* maquina = jugadores.at(i)->obtenerMaquinaEstados();
+		MaquinaDeEstados* maquinaNueva = new MaquinaDeEstados();
+
+		for (int j = 0; j < maquina->obtenerNumeroTotalEstados(); ++j)
+		{
+			int* nuevoEstado = new int[4];
+
+			if(estadosUtiles[maquina->obtenerEstado(j+1).at(0)-1]!=0)
+			{
+				nuevoEstado[0]= estadosUtiles[maquina->obtenerEstado(j+1).at(0)-1];
+				nuevoEstado[1]= estadosUtiles[maquina->obtenerEstado(j+1).at(1)-1];
+				nuevoEstado[2]= estadosUtiles[maquina->obtenerEstado(j+1).at(2)-1];
+				nuevoEstado[3]= estadosUtiles[maquina->obtenerEstado(j+1).at(3)-1];
+
+				maquinaNueva->agregarEstados(nuevoEstado);
+			}
+		}
+
+		jugadores.at(i)->definirMaquinaEstados(maquinaNueva);
+	}
+
+	if (estadosUtiles !=0 )
+		delete [] estadosUtiles;
+	estadosUtiles=0;
+}
+
+void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
+{
+	iniciarMatrizDePagos(TC, CC, TT, CT);
+	jugar(cantidadDeJuegos);
+	limpiarEstadosJugadores();
 }
 
 /*
  * Este método reduce la población total a un valor dado específico
+ */
+/**
+ * Quitar la penalización por el número de estados
  */
 void Prisionero::reducirPoblacion(int numeroSobrevivientes)
 {
@@ -110,6 +158,7 @@ void Prisionero::reducirPoblacion(int numeroSobrevivientes)
 
 	numEstadosPromedio=numEstadosPromedio/(double)(jugadores.size());
 
+	//Si tiene menos estados que el promedio aumenta su ganacia con un porcentaje de la que tenía antes, si tiene más la disminuye en ese porcentaje
 	for (int i = 0; i < jugadores.size(); ++i)
 		jugadores.at(i)->agregarGanancia(0.1*((numEstadosPromedio-(double)(jugadores.at(i)->obtenerNumeroEstados()))/(double)maximoEstados)*jugadores.at(i)->obtenerGanancia());
 
@@ -127,7 +176,7 @@ void Prisionero::reducirPoblacion(int numeroSobrevivientes)
  */
 void Prisionero::cruzarJugadores(int tamanoFinalPoblacion)
 {
-	int tamanoActualPoblacion = jugadores.size();
+	int tamanoActualPoblacion = jugadores.size(); //Esto no es igual a totalDeJugadores???
 	int numEstadosA=0, numEstadosB=0, numEstadosC=0, jugadorA, jugadorB, tmp;
 
 	for (int i = 0; i < totalDeJugadores; ++i)
@@ -245,66 +294,38 @@ void Prisionero::mutarJugadores(double porcentajeMutacion)
 	}
 }
 
-void Prisionero::limpiarEstadosJugadores()
+void Prisionero::evolucionar(int numeroGeneraciones, int numeroJugadores, int cantidadDeJuegos, double porcentajeSobrevive, double porcentajeMutacion)
 {
-	int estadosMaximos = jugadores.at(0)->obtenerNumeroEstados();
-
-	for (int i = 1; i < totalDeJugadores; ++i)
+	for (int i = 0; i < numeroGeneraciones; ++i)
 	{
-		if(estadosMaximos < jugadores.at(i)->obtenerNumeroEstados())
-			estadosMaximos = jugadores.at(i)->obtenerNumeroEstados();
+		reducirPoblacion((int)(porcentajeSobrevive*numeroJugadores));
+		cruzarJugadores(numeroJugadores);
+		mutarJugadores(porcentajeMutacion);
+		jugar(cantidadDeJuegos);
+		limpiarEstadosJugadores();
 	}
-
-	estadosMaximos++;
-
-	int* estadosUtiles = new int[estadosMaximos];
-
-	for (int i = 0; i < totalDeJugadores; ++i)
-	{
-		for (int j = 0; j < estadosMaximos; j++) estadosUtiles[j]=0;
-
-		auxRecursionLimpiarEstados(estadosUtiles, 1, i);
-
-		int numEstadosUtiles=0;
-
-		for (int j = 0; j < estadosMaximos; ++j)
-		{
-			numEstadosUtiles += estadosUtiles[j];
-			if(estadosUtiles[j]==1)
-				estadosUtiles[j]=numEstadosUtiles;
-		}
-
-		MaquinaDeEstados* maquina = jugadores.at(i)->obtenerMaquinaEstados();
-		MaquinaDeEstados* maquinaNueva = new MaquinaDeEstados();
-
-		for (int j = 0; j < maquina->obtenerNumeroTotalEstados(); ++j)
-		{
-			int* nuevoEstado = new int[4];
-
-			if(estadosUtiles[maquina->obtenerEstado(j+1).at(0)-1]!=0)
-			{
-				nuevoEstado[0]= estadosUtiles[maquina->obtenerEstado(j+1).at(0)-1];
-				nuevoEstado[1]= estadosUtiles[maquina->obtenerEstado(j+1).at(1)-1];
-				nuevoEstado[2]= estadosUtiles[maquina->obtenerEstado(j+1).at(2)-1];
-				nuevoEstado[3]= estadosUtiles[maquina->obtenerEstado(j+1).at(3)-1];
-
-				maquinaNueva->agregarEstados(nuevoEstado);
-			}
-		}
-
-		jugadores.at(i)->definirMaquinaEstados(maquinaNueva);
-	}
-
-	if (estadosUtiles !=0 )
-		delete [] estadosUtiles;
-	estadosUtiles=0;
 }
 
+/*
+ * Este método devuelve el mejor jugador actual
+ */
+Jugador* Prisionero::obtenerMejorJugador()
+{
+	Jugador* mejorJugador = jugadores.at(0);
+	for (int i = 1; i < jugadores.size(); ++i)
+	{
+		if(jugadores.at(i)->obtenerGanancia()>mejorJugador->obtenerGanancia())
+			mejorJugador=jugadores.at(i);
+	}
+	return mejorJugador;
+}
+
+//Coloca en 1 los estados a los que hay camino para llegar?
 void Prisionero::auxRecursionLimpiarEstados(int* estadosUtiles, int estadoInicial, int numJugador)
 {
-	if(estadosUtiles[estadoInicial-1]==1)
+	if(estadosUtiles[estadoInicial-1]==1) //Si ya se revisó ese estado?
 		return;
-	else
+	else //Sino busca por los dos caminos
 	{
 		estadosUtiles[estadoInicial-1]=1;
 		auxRecursionLimpiarEstados(estadosUtiles, jugadores.at(numJugador)->obtenerMaquinaEstados()->obtenerEstado(estadoInicial).at(2), numJugador);
@@ -401,16 +422,4 @@ QVector<Jugador *> Prisionero::mezclar(QVector<Jugador *> entrada1, QVector<Juga
 	}
 
 	return salida;
-}
-
-void Prisionero::evolucionar(int numeroGeneraciones, int numeroJugadores, int cantidadDeJuegos, double porcentajeSobrevive, double porcentajeMutacion)
-{
-	for (int i = 0; i < numeroGeneraciones; ++i)
-	{
-		reducirPoblacion((int)(porcentajeSobrevive*numeroJugadores));
-		cruzarJugadores(numeroJugadores);
-		mutarJugadores(porcentajeMutacion);
-		jugar(cantidadDeJuegos);
-		limpiarEstadosJugadores();
-	}
 }
