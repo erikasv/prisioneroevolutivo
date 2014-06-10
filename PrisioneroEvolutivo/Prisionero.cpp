@@ -135,11 +135,13 @@ void Prisionero::limpiarEstadosJugadores()
 	estadosUtiles=0;
 }
 
-void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
+void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos, int retardoPagoIN, double repartoPagoIN)
 {
 	iniciarMatrizDePagos(TC, CC, TT, CT);
 	jugar(cantidadDeJuegos);
 	limpiarEstadosJugadores();
+	retardoPago = retardoPagoIN;
+	repartoPago = repartoPagoIN;
 }
 
 /*

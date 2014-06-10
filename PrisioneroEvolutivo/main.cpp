@@ -23,13 +23,23 @@ int main(int argc, char *argv[])
 	//	Parámetros modificables mediante entrada
 	int numeroGeneraciones= 1000;
 	int numeroJugadores = 50;
-	int cantidadDeJuegos=100; //ERIKA: CAMBIAR ESTO POR PROBABILIDAD DE ENCUENTROS. VER LIBRO PARA COMPROBAR VALOR.
+	int cantidadDeJuegos=100; //CAMBIAR ESTO POR PROBABILIDAD DE ENCUENTROS. VER LIBRO PARA COMPROBAR VALOR.
+	int retardoPago=0;
+	double repartoPago=0.0;
 
 	if(argc==4)
 	{
 		numeroGeneraciones = atoi(argv[1]);
 		numeroJugadores    = atoi(argv[2]);
 		cantidadDeJuegos   = atoi(argv[3]);
+	}
+	else if(argc==6)
+	{
+		numeroGeneraciones = atoi(argv[1]);
+		numeroJugadores    = atoi(argv[2]);
+		cantidadDeJuegos   = atoi(argv[3]);
+		retardoPago	   = atoi(argv[3]);
+		repartoPago        = atof(argv[5]);
 	}
 
 	//	Parámetros modificables en ejecución
@@ -49,6 +59,10 @@ int main(int argc, char *argv[])
 		cin>>porcentajeSobrevive;
 		cout<<"¿Cual es el porcentaje de mutación? (en un rango de 0 a 1)"<<endl;
 		cin>>porcentajeMutacion;
+		cout<<"¿Cual es el retardo para el pago? (en un rango de 0 a 1)"<<endl;
+		cin>>retardoPago;
+		cout<<"¿Cual es el porcentaje de reparto del pago? (en un rango de 0 a 1)"<<endl;
+		cin>>repartoPago;
 	}
 
 	int TC = 5;
@@ -72,7 +86,7 @@ int main(int argc, char *argv[])
 	}
 
 	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados);
-	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
+	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos, retardoPago, repartoPago); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
 
 	cout<<endl<<"--------------------------------------------------------------------"<<endl;
 	cout<<"----------------------   Población Inicial   -----------------------"<<endl;

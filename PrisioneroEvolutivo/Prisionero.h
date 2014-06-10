@@ -20,6 +20,8 @@ class Prisionero
 		int totalDeJugadores;
 		int maximoPoblacion;
 		int maximoEstados;
+		int retardoPago;
+		double repartoPago;
 		/*
 		* Matriz de pagos
 		*/
@@ -36,7 +38,7 @@ class Prisionero
 		void jugar(int ca1ntidadDeJuegos);
 		void limpiarEstadosJugadores();
 		void auxRecursionLimpiarEstados(int* estadosUtiles, int estadoInicial, int numJugador);
-		void inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos);
+		void inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos, int retardoPagoIN, double repartoPagoIN);
 
 		//	Metodos Evolutivos
 		void reducirPoblacion(int numeroSobrevivientes);
