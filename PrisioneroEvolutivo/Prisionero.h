@@ -29,7 +29,7 @@ class Prisionero
 
 	public:
 		//	Constructores
-		Prisionero(int numeroJugadores, int numMaximoEstados);
+		Prisionero(int numeroJugadores, int numMaximoEstados, int retardoPagoIN, double repartoPagoIN);
 		~Prisionero();
 
 		//	Metodos del juego
@@ -38,7 +38,7 @@ class Prisionero
 		void jugar(int ca1ntidadDeJuegos);
 		void limpiarEstadosJugadores();
 		void auxRecursionLimpiarEstados(int* estadosUtiles, int estadoInicial, int numJugador);
-		void inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos, int retardoPagoIN, double repartoPagoIN);
+		void inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos);
 
 		//	Metodos Evolutivos
 		void reducirPoblacion(int numeroSobrevivientes);

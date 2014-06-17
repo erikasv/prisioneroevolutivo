@@ -13,10 +13,16 @@ MatrizDePagos::MatrizDePagos(int T, int R, int P, int S)
 	this->R = R;
 	this->P = P;
 	this->S = S;
+	reparto=0.0;
 }
 
 MatrizDePagos::~MatrizDePagos()
 {
+}
+
+void setReparto(double repartoIN)
+{
+    reparto=repartoIN;
 }
 
 int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)

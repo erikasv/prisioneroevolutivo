@@ -2,6 +2,7 @@
 #define JUGADOR_H
 #include "MaquinaDeEstados.h"
 #include <cstdlib> 
+#include <QVector>
 #include "Estado.h"
 
 using namespace std;
@@ -13,9 +14,11 @@ class Jugador
 		Estado * estado;
 		int numeroEstados;
 		int gananciaJugador;
+		int retardoPago;
+		QVector<int> pagos;
 
 	public:
-		Jugador(int numMaximoEstados);
+		Jugador(int numMaximoEstados, int retardoPagoIN);
 		Jugador(MaquinaDeEstados* maquinaIn, int numeroEstadosIN);
 		~Jugador();
 

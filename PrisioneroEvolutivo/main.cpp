@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
 		cin>>CT;
 	}
 
-	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados);
-	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos, retardoPago, repartoPago); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
+	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados, retardoPago, repartoPago);
+	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
 
 	cout<<endl<<"--------------------------------------------------------------------"<<endl;
 	cout<<"----------------------   Población Inicial   -----------------------"<<endl;

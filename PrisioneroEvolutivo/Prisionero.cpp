@@ -8,14 +8,16 @@
 * Contructor
 * Inicializa los jugadores
 */
-Prisionero::Prisionero(int numeroJugadores, int numMaximoEstados)
+Prisionero::Prisionero(int numeroJugadores, int numMaximoEstados, int retardoPagoIN, double repartoPagoIN)
 {
+	retardoPago = retardoPagoIN;
+	repartoPago = repartoPagoIN;
 	/*
 	* Crear jugadores e inicializar su máquina de estados
 	*/
 	for(int i=0; i<numeroJugadores; i++)
 	{
-		Jugador* tmp = new Jugador(numMaximoEstados);
+		Jugador* tmp = new Jugador(numMaximoEstados, retardoPago);
 		tmp->iniciarJugador();
 		jugadores.append(tmp);
 		//cout << jugadores.at(i) <<endl;
@@ -135,13 +137,11 @@ void Prisionero::limpiarEstadosJugadores()
 	estadosUtiles=0;
 }
 
-void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos, int retardoPagoIN, double repartoPagoIN)
+void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
 {
 	iniciarMatrizDePagos(TC, CC, TT, CT);
 	jugar(cantidadDeJuegos);
 	limpiarEstadosJugadores();
-	retardoPago = retardoPagoIN;
-	repartoPago = repartoPagoIN;
 }
 
 /*

@@ -16,11 +16,14 @@ class MatrizDePagos
 	* (T+S)/2 < R
 	*/
 	int T,R,P,S;
+	double reparto;
 
 	public:
 		MatrizDePagos(int T, int R, int P, int S);
 		~MatrizDePagos();
+		
 
+		void setReparto(double repartoIN);
 		int obtenerGananciaJugador(int jugadaPropia, int jugadaOponente);
 };
 
