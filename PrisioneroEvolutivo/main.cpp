@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		numeroGeneraciones = atoi(argv[1]);
 		numeroJugadores    = atoi(argv[2]);
 		cantidadDeJuegos   = atoi(argv[3]);
-		retardoPago	   = atoi(argv[3]);
+		retardoPago        = atoi(argv[3]);
 		repartoPago        = atof(argv[5]);
 	}
 

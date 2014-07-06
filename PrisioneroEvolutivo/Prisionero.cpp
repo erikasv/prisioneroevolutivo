@@ -38,6 +38,7 @@ Prisionero::~Prisionero()
 void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 {
 	matrizDePagos = new MatrizDePagos(T,R,P,S);
+        matrizDePagos->setReparto(repartoPago);
 }
 
 /*

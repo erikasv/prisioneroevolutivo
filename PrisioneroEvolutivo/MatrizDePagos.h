@@ -1,6 +1,8 @@
 #ifndef MATRIZDEPAGOS_H
 #define MATRIZDEPAGOS_H
 
+#include <math.h>
+
 class MatrizDePagos
 {
 	/*

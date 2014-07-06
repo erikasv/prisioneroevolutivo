@@ -20,13 +20,14 @@ MatrizDePagos::~MatrizDePagos()
 {
 }
 
-void setReparto(double repartoIN)
+void MatrizDePagos::setReparto(double repartoIN)
 {
     reparto=repartoIN;
 }
 
 int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
 {
+    int repartoGanancia = ceil((T * reparto) / 2);
     switch(jugadaPropia)
     {
         case 0:
@@ -38,7 +39,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 else
                 {
                     //TraicionarYo - CooperarOponente
-                    return T;
+                    return T - repartoGanancia;
                 }
                 break;
 
@@ -46,7 +47,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 if(jugadaOponente == 0)
                 {
                     //CooperarYo - TraicionarOponente
-                    return S;
+                    return S + repartoGanancia;
                 }
                 else
                 {
