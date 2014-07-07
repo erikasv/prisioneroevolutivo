@@ -5,13 +5,14 @@
  */
  #include "Jugador.h"
  
-Jugador::Jugador(int numMaximoEstados, int retardoPagoIN)
+Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interes IN)
 {
 	maquinaDeEstados = new MaquinaDeEstados();
 	numeroEstados = rand()%numMaximoEstados + 1;
 	gananciaJugador = 0;
 	estado = new Estado(numeroEstados);
 	retardoPago=retardoPagoIN;
+	interes=interesIN;
 	
 	//Vector para pagar asignar el pago de las partidas anteriores
 	pagos= QVector<int>(retardoPago);
@@ -37,7 +38,7 @@ Jugador::~Jugador()
  */
 void Jugador::jugadaOponente(int jugada)
 {
-    maquinaDeEstados->irProximoEstado(jugada);
+	maquinaDeEstados->irProximoEstado(jugada);
 }
 
 /*
@@ -71,11 +72,15 @@ int Jugador::miJugada()
  */
 void Jugador::agregarGanancia(int ganancia)
 {
-    //Modificada la ganancia asignada en cada juego.
-    //Falta decidir si se asigna todo al final, o sólo hasta lo que alcanzó
-    gananciaJugador+=pagos[0];
-    pagos.pop_front();
-    pagos.append(ganancia);
+	//Modificada la ganancia asignada en cada juego.
+	if(retardoPago>0){
+		gananciaJugador+=pagos[0]+(pagos[0]*interes);
+		pagos.pop_front();
+		pagos.append(ganancia);
+	}
+	else{
+		gananciaJugador+=ganancia;
+	}
 }
 
 /*

@@ -29,7 +29,7 @@ class Prisionero
 
 	public:
 		//	Constructores
-		Prisionero(int numeroJugadores, int numMaximoEstados, int retardoPagoIN, double repartoPagoIN);
+		Prisionero(int numeroJugadores, int numMaximoEstados, int retardoPagoIN, double repartoPagoIN, double interesIN);
 		~Prisionero();
 
 		//	Metodos del juego

@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 	int cantidadDeJuegos=100; //CAMBIAR ESTO POR PROBABILIDAD DE ENCUENTROS. VER LIBRO PARA COMPROBAR VALOR.
 	int retardoPago=0;
 	double repartoPago=0.0;
+	double interes=0.0;
 
 	if(argc==4)
 	{
@@ -33,13 +34,14 @@ int main(int argc, char *argv[])
 		numeroJugadores    = atoi(argv[2]);
 		cantidadDeJuegos   = atoi(argv[3]);
 	}
-	else if(argc==6)
+	else if(argc==7)
 	{
 		numeroGeneraciones = atoi(argv[1]);
 		numeroJugadores    = atoi(argv[2]);
 		cantidadDeJuegos   = atoi(argv[3]);
 		retardoPago        = atoi(argv[3]);
 		repartoPago        = atof(argv[5]);
+		interes						 = atof(argv[6]);
 	}
 
 	//	Parámetros modificables en ejecución
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
 	double porcentajeMutacion=0.1;
 
 	char respuesta;
-	cout<<"¿Desea cambiar los valores específicos de la aplicación?[Y/N]"<<endl;
+	cout<<"¿Desea cambiar los valores específicos de la aplicación? [Y/N]"<<endl;
 	cin>>respuesta;
 
 	if(toupper(respuesta)=='Y')
@@ -59,10 +61,12 @@ int main(int argc, char *argv[])
 		cin>>porcentajeSobrevive;
 		cout<<"¿Cual es el porcentaje de mutación? (en un rango de 0 a 1)"<<endl;
 		cin>>porcentajeMutacion;
-		cout<<"¿Cual es el retardo para el pago? (en un rango de 0 a 1)"<<endl;
+		cout<<"¿Cual es el retardo para el pago?"<<endl;
 		cin>>retardoPago;
 		cout<<"¿Cual es el porcentaje de reparto del pago? (en un rango de 0 a 1)"<<endl;
 		cin>>repartoPago;
+		cout<<"¿Cual es el porcentaje de interés ganado por el retardo del pago? (en un rango de 0 a 1)"<<endl;
+		cin>>interes;
 	}
 
 	int TC = 5;
@@ -85,7 +89,7 @@ int main(int argc, char *argv[])
 		cin>>CT;
 	}
 
-	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados, retardoPago, repartoPago);
+	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados, retardoPago, repartoPago, interes);
 	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
 
 	cout<<endl<<"--------------------------------------------------------------------"<<endl;

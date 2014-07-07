@@ -18,7 +18,7 @@ class Jugador
 		QVector<int> pagos;
 
 	public:
-		Jugador(int numMaximoEstados, int retardoPagoIN);
+		Jugador(int numMaximoEstados, int retardoPagoIN, double interesIN);
 		Jugador(MaquinaDeEstados* maquinaIn, int numeroEstadosIN);
 		~Jugador();
 
