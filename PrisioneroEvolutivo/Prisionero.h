@@ -22,6 +22,7 @@ class Prisionero
 		int maximoEstados;
 		int retardoPago;
 		double repartoPago;
+		double interes;
 		/*
 		* Matriz de pagos
 		*/

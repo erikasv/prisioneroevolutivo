@@ -5,7 +5,7 @@
  */
  #include "Jugador.h"
  
-Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interes IN)
+Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interesIN)
 {
 	maquinaDeEstados = new MaquinaDeEstados();
 	numeroEstados = rand()%numMaximoEstados + 1;
@@ -15,9 +15,15 @@ Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interes IN)
 	interes=interesIN;
 	
 	//Vector para pagar asignar el pago de las partidas anteriores
-	pagos= QVector<int>(retardoPago);
-	for (int i=0;i<retardoPago;i++){
-	  pagos[i]=0;
+	pagoInmediato=(int)rand()%2;
+	if(pagoInmediato){
+	  pagos= QVector<int>(0);
+	}
+	else{
+	  pagos= QVector<int>(retardoPago);
+	  for (int i=0;i<retardoPago;i++){
+	    pagos[i]=0;
+	  }
 	}
 }
 
@@ -27,6 +33,15 @@ Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN)
 	numeroEstados=numeroEstadosIN;
 	gananciaJugador=0;
 	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
+}
+
+Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN, bool desicionPadre)
+{
+	maquinaDeEstados=maquinaIn;
+	numeroEstados=numeroEstadosIN;
+	gananciaJugador=0;
+	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
+	pagoInmediato=desicionPadre;
 }
 
 Jugador::~Jugador()
@@ -47,6 +62,19 @@ void Jugador::jugadaOponente(int jugada)
 int Jugador::miJugada()
 {
 	return maquinaDeEstados->obtenerSalidaEstadoPresente();
+}
+
+/*
+* Este método sirve para mutar la decisión del pago inmediato
+*/
+void Jugador::mutarPagoInmediato()
+{
+  pagoInmediato=(int)rand()%2;
+}
+
+bool Jugador::obtenerPagoInmediato()
+{
+  return pagoInmediato;
 }
 
 /*
@@ -72,15 +100,20 @@ int Jugador::miJugada()
  */
 void Jugador::agregarGanancia(int ganancia)
 {
-	//Modificada la ganancia asignada en cada juego.
-	if(retardoPago>0){
-		gananciaJugador+=pagos[0]+(pagos[0]*interes);
-		pagos.pop_front();
-		pagos.append(ganancia);
-	}
-	else{
-		gananciaJugador+=ganancia;
-	}
+  //Modificada la ganancia asignada en cada juego.
+  if(!pagoInmediato){
+    gananciaJugador+=ganancia;
+  }
+  else{
+    gananciaJugador+=pagos[0]+(pagos[0]*interes); //Se asume que el interés es por el tiempo de retraso, no por unidad de tiempo.
+    pagos.pop_front();
+    pagos.append(ganancia);
+  }
+}
+
+void Jugador::asignarCastigo(int valor)
+{
+	gananciaJugador+=valor;
 }
 
 /*
@@ -102,6 +135,10 @@ int Jugador::obtenerGanancia()
 void Jugador::resetearGanancia()
 {
 	gananciaJugador=0;
+	
+	for (int i=0;i<retardoPago;i++){
+	  pagos[i]=0;
+	}
 }
 
 /*
