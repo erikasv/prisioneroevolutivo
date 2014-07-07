@@ -1,11 +1,16 @@
 Prisionero Evolutivo
 ====================
 
-Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
+Proyecto final del curso Vida Artificial (Victor Alberto Romero, Carlos Andres Delgado).
+
+Ediciones para el proyecto de Practica Investigativa I (Erika Suárez Valencia).
 
 ## Creado por:
 - Victor Alberto Romero
 - Carlos Andres Delgado
+
+## Editado por:
+- Erika Suárez Valencia
 
 # Notas
 
@@ -48,36 +53,17 @@ Proyecto final de Prisionero Evolutivo. Curso Vida Artificial.
 2. Para generar la mutación y la primera generación, se creará un estado
    aleatório, si el estado ya existe pues se usa el existente, sino se crea el
    nuevo.
-	- Cruzar:
+	- Cruce:
     		
-		Mirar lo de superpoblacion (Cuantos hijos tienen cada jugador).
-		
-		Propuesta: Tomar dos jugadores, tomar 50% estados de uno y de otro.
-		
-		Nota: En este caso el numero de estados del hijo debe ser el promedio entre ambos
+		Se toma un porcentaje aleatorio de genes de cada padre para conformar el hijo. Los primeros n genes corresponden al padre con menor candidad de genes y los ultimos m al padre con mayor cantidad de genes.
 		
 		* Ejemplo:
 			
-			JugadorA Tiene 40 estados.
+			JugadorA Tiene 40 estados. Supongamos se toman 20 estados.
 			
-			JugadorB tiene 120 estados.
+			JugadorB tiene 120 estados. Supongamos se toman 40 estados
 			
-			Si el valor es impar, tomar piso como mitad.
-			
-			En este caso el hijo tiene 80 (160/2) estados:
-			
-			20 son de A y 60 son de B.
-			
-			Podria ser:
-			
-			a. Se tomarian los 20 primeros de A y luego los 60 ultimos de B, 
-			   recordad que la tabla de estados esta en orden.
-			
-			b. Se tomarian los 20 primeros de B, luego los 20 ultimos de A y 
-			   finalmente los 40 ultimos de B.
-			
-			c. Otra combinacion pero..., tomar en cuenta que los estados de	A 
-			   no pueden estar más alla del estado 40 del hijo.
+			Debido a que JugadorA tiene menos estados que JugadorB, el hijo resultante tiene los 20 primeros estados de JugadorA y los ultimos 40 estados de JugadorB.
 	- Mutar:
 		
 		Propuesta: Tomar 10% de los estados, aleatoriamente (sin tomar el mismo) cambiar salida y los dos Proximos Estados por un valor aleatorio.
