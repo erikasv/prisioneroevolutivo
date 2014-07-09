@@ -45,17 +45,15 @@ Ediciones para el proyecto de Practica Investigativa I (Erika Suárez Valencia).
 			.
 		    [N X X X] ]
 		```
-    - Para acceder a un estado conocido, solo basta con EstadoPresente - 1 
-      (Porque el Vector esta indexado desde 0)
-    - Poblacion inicial: 40 (Mirar main.cpp)
-    - Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
+	- Para acceder a un estado conocido, solo basta con EstadoPresente - 1 
+      	(Porque el Vector esta indexado desde 0)
+	- Poblacion inicial: 40 (Mirar main.cpp)
+	- Cada jugador juega contra toda la poblacion unas 200 veces con cada uno
 
-2. Para generar la mutación y la primera generación, se creará un estado
-   aleatório, si el estado ya existe pues se usa el existente, sino se crea el
-   nuevo.
+2. Operadores
 	- Cruce:
     		
-		Se toma un porcentaje aleatorio de genes de cada padre para conformar el hijo. Los primeros n genes corresponden al padre con menor candidad de genes y los ultimos m al padre con mayor cantidad de genes.
+		Se toma un porcentaje aleatorio de genes de cada padre para conformar el hijo. Los primeros n genes corresponden al padre con menor candidad de genes y los ultimos m al padre con mayor cantidad de genes. El último gen siempre corresponde al padre con mayor cantida de genes, y éste corresponde al gen que indica si se desea el pago inmediato o retrasado.
 		
 		* Ejemplo:
 			
@@ -63,8 +61,10 @@ Ediciones para el proyecto de Practica Investigativa I (Erika Suárez Valencia).
 			
 			JugadorB tiene 120 estados. Supongamos se toman 40 estados
 			
-			Debido a que JugadorA tiene menos estados que JugadorB, el hijo resultante tiene los 20 primeros estados de JugadorA y los ultimos 40 estados de JugadorB.
-	- Mutar:
+			Debido a que JugadorA tiene menos estados que JugadorB, el hijo resultante tiene los 20 primeros estados de JugadorA y los ultimos 40 estados y el gen de desición sobre el pago de JugadorB.
+	- Mutación:
+		
+		Para generar la mutación y la primera generación, se creará un estado aleatório, si el estado ya existe pues se usa el existente, sino se crea el nuevo.
 		
 		Propuesta: Tomar 10% de los estados, aleatoriamente (sin tomar el mismo) cambiar salida y los dos Proximos Estados por un valor aleatorio.
 		
@@ -77,17 +77,23 @@ Ediciones para el proyecto de Practica Investigativa I (Erika Suárez Valencia).
 			Por ejemplo queda asi: [1 0 33 22]
 			
 			El cromosoma 1 del hijo ha mutado y asi con los 4, 16 y 22.
-			
-3. La limpieza consiste en que después de efectuar mutación y cruce, se realizará una búsqueda por amplitud en las rutas de la maquina de estados para quitar los estados que nunca son usados. Esto tiene que ser ANTES de aplicar la función de amptitud.
 
-4. Función de visualización.
+3. Los parametros adicionales son el retraso y el reparto del pago.
+	- Retraso:
+		
+		Los individuos tienen un gen que indica si desean el pago inmediato o después con un interés adicional. Tanto el tiempo de retraso como el interés con parámetros de entrada, este interés es por el tiempo completo, no por unidad de tiempo.
+	- Reparto:
+		
+		<>
+
+4. La limpieza consiste en que después de efectuar mutación y cruce, se realizará una búsqueda por amplitud en las rutas de la maquina de estados para quitar los estados que nunca son usados. Esto tiene que ser ANTES de aplicar la función de amptitud.
+
+5. Función de visualización.
     - Ganancia de cada jugador
     - Maquina de estados de cada jugador 
 
-5. Funcion de aptitud.
+6. Funcion de aptitud.
     - Para valores altos de numero de veces que juegan dos jugadores. GananciaJugador >> Numero estados promedio
     - Aptitud = GananciaJugador - Numero estados promedio
     - Pasan 40% mas aptos.
     - Condicion de parada: 1000 iteraciones o GananciasPromedioTodos >= ValorRecompensa*Poblacion*NumerodeVecesqueJueganDosJugadoresunaPartida (Todos cooperan).
-
-
