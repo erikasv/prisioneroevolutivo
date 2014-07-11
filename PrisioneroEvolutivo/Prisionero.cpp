@@ -39,7 +39,6 @@ Prisionero::~Prisionero()
 void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 {
 	matrizDePagos = new MatrizDePagos(T,R,P,S);
-	matrizDePagos->setReparto(repartoPago);
 }
 
 /*
@@ -52,33 +51,95 @@ void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 */
 void Prisionero::jugar(int cantidadDeJuegos)
 {
-	for(int i=0; i<totalDeJugadores; i++)
-	{
-		for(int j=i+1; j<totalDeJugadores; j++)
-		{
-			Jugador * jugadorA = jugadores.at(i);
-			Jugador * jugadorB = jugadores.at(j);
-			jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente(); //Jugador debería tener el metodo resetearEstadoPresente() y él hacer el llamado a la máquina de estados.
-			jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
-			
-			for (int var = 0; var < cantidadDeJuegos; var++)
-			{
-				//Juguemos
-				//Jugada estado presente
-				int jugadaJugadorA = jugadorA->miJugada();
-				int jugadaJugadorB = jugadorB->miJugada();
-				
-				//Pasemos al proximo estado
-				jugadorA->jugadaOponente(jugadaJugadorB);
-				jugadorB->jugadaOponente(jugadaJugadorA);
+  QVector<Jugador*> grupoA, grupoB;
+  for(int i=0; i<totalDeJugadores; i++)
+  {
+    Jugador * jugadorA = jugadores.at(i);
+    jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente(); //Jugador debería tener el metodo resetearEstadoPresente() y él hacer el llamado a la máquina de estados.
+    jugadorA->asignarRecienJugo(true);
+    
+    grupoA=obtenerJugadoresGrupo(jugadorA->obtenerGrupo());
+    
+    for(int j=i+1; j<totalDeJugadores; j++)
+    {
+      Jugador * jugadorB = jugadores.at(j);
+      jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
+      jugadorB->asignarRecienJugo(true);
+      
+      grupoB=obtenerJugadoresGrupo(jugadorB->obtenerGrupo());
+      
+      double pagoParteA=0.0;
+      double pagoParteB=0.0;
+      int gananciaA, gananciaB;
+      
+      for (int var = 0; var < cantidadDeJuegos; var++)
+      {
+	//Juguemos
+	//Jugada estado presente
+	int jugadaJugadorA = jugadorA->miJugada();
+	int jugadaJugadorB = jugadorB->miJugada();
+	
+	//Pasemos al proximo estado
+	jugadorA->jugadaOponente(jugadaJugadorB);
+	jugadorB->jugadaOponente(jugadaJugadorA);
 
-				/** INTRODUCIR PARAMETROS AQUI*/
-				//Ganancias para cada uno
-				jugadorA->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB));
-				jugadorB->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA));                
-			}
-		}
+	/** INTRODUCIR PARAMETROS AQUI*/
+	//Ganancias para cada uno
+	gananciaA=matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB);
+	gananciaB=matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA);
+	
+	if (jugadorA->obtenerPagoInmediato())
+	{
+	  jugadorA->agregarGanancia(gananciaA);
 	}
+	else{
+	  pagoParteA+=gananciaA*repartoPago;
+	}
+	
+	if(jugadorA->obtenerPagoInmediato())
+	{
+	  jugadorB->agregarGanancia(gananciaB);
+	}
+	else
+	{
+	  pagoParteB+=gananciaB*repartoPago;
+	}
+      }
+      
+      pagoParteA/=(grupoA.size() - 1);
+      pagoParteB/=(grupoB.size() - 1);
+      
+      //Pagar a los demás miembros del grupo
+      for(int k=0; j<grupoA.size(); k++)
+      {
+	if( !grupoA.at(k)->obtenerRecienJugo())
+	{
+	  grupoA.at(k)->asignarPagoExtra(pagoParteA);
+	}
+      }
+      
+      for(int k=0; j<grupoB.size(); k++)
+      {
+	if( !grupoB.at(k)->obtenerRecienJugo())
+	{
+	  grupoB.at(k)->asignarPagoExtra(pagoParteB);
+	}
+      }
+    }
+  }
+}
+
+QVector<Jugador*> Prisionero::obtenerJugadoresGrupo(int grupo)
+{
+  QVector<Jugador*> result;
+  for(int i=0; i<totalDeJugadores;i++)
+  {
+    if(jugadores.at(i)->obtenerGrupo() == grupo)
+    {
+      result.append(jugadores.at(i));
+    }
+  }
+  return result;
 }
 
 /**QUITAR ESTA FUNCIÓN, REDUCIR EL NÚMERO MÁXIMO DE ESTADOS PARA EVITAR QUE LAS 

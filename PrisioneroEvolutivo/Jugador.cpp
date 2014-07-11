@@ -13,6 +13,8 @@ Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interesIN)
 	estado = new Estado(numeroEstados);
 	retardoPago=retardoPagoIN;
 	interes=interesIN;
+	recienJugo=false;
+	grupo = (int)rand()%10; //Es probable que sea necesario pasar el rango como entrada
 	
 	//Vector para pagar asignar el pago de las partidas anteriores
 	pagoInmediato=(int)rand()%2;
@@ -33,6 +35,8 @@ Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN)
 	numeroEstados=numeroEstadosIN;
 	gananciaJugador=0;
 	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
+	grupo = (int)rand()%10;
+	recienJugo=false;
 }
 
 Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN, bool desicionPadre)
@@ -42,6 +46,8 @@ Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN, bool desicion
 	gananciaJugador=0;
 	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
 	pagoInmediato=desicionPadre;
+	grupo = (int)rand()%10;
+	recienJugo=false;
 }
 
 Jugador::~Jugador()
@@ -75,6 +81,21 @@ void Jugador::mutarPagoInmediato()
 bool Jugador::obtenerPagoInmediato()
 {
   return pagoInmediato;
+}
+
+bool Jugador::obtenerRecienJugo()
+{
+  return recienJugo;
+}
+
+int Jugador::obtenerGrupo()
+{
+  return grupo;
+}
+
+void Jugador::asignarRecienJugo(bool val)
+{
+  recienJugo=val;
 }
 
 /*
@@ -114,6 +135,11 @@ void Jugador::agregarGanancia(int ganancia)
 void Jugador::asignarCastigo(int valor)
 {
 	gananciaJugador+=valor;
+}
+
+void Jugador::asignarPagoExtra(double pago)
+{
+  gananciaJugador+=pago;
 }
 
 /*

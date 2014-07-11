@@ -50,6 +50,7 @@ class Prisionero
 		//	Médotos auxiliares
 		QVector<Jugador*> ordenar(QVector<Jugador*> entrada);
 		QVector<Jugador*> mezclar(QVector<Jugador*> entrada1, QVector<Jugador*> entrada2);
+		QVector<Jugador*> obtenerJugadoresGrupo(int grupo);
 		void imprimirPoblacion();
 		void imprimirGananciaPromedio();
 		void imprimirGananciaMejor();

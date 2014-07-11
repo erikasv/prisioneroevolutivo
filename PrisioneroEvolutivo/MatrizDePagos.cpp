@@ -13,21 +13,14 @@ MatrizDePagos::MatrizDePagos(int T, int R, int P, int S)
 	this->R = R;
 	this->P = P;
 	this->S = S;
-	reparto=0.0;
 }
 
 MatrizDePagos::~MatrizDePagos()
 {
 }
 
-void MatrizDePagos::setReparto(double repartoIN)
-{
-    reparto=repartoIN;
-}
-
 int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
 {
-    int repartoGanancia = ceil((T * reparto) / 2);
     switch(jugadaPropia)
     {
         case 0:
@@ -39,7 +32,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 else
                 {
                     //TraicionarYo - CooperarOponente
-                    return T - repartoGanancia;
+                    return T;
                 }
                 break;
 
@@ -47,7 +40,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 if(jugadaOponente == 0)
                 {
                     //CooperarYo - TraicionarOponente
-                    return S + repartoGanancia;
+                    return S;
                 }
                 else
                 {
@@ -56,7 +49,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 }
                 break;
 
-				default: return 0; break; //Estos return 0 son para evitar el warning ERIKA:???
+		default: return 0; break; //Estos return 0 son para evitar el warning
     }
     return 0;
 }
