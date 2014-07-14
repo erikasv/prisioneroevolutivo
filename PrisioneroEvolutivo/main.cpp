@@ -1,5 +1,5 @@
 /*
- * Carlos Andres Delgado 
+ * Carlos Andres Delgado
  * Victor Alberto Romero
  * Proyecto Software Vida Artificial
  * Feb - Jun 2011
@@ -7,7 +7,7 @@
 #include <QtCore/QCoreApplication>
 #include <iostream>
 #include "Prisionero.h"
-#include <time.h> 
+#include <time.h>
 #include <unistd.h>
 
 using namespace std;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	int numeroInicialEstados=200; //ERIKA: PORQUE ESE VALOR???
 	double porcentajeSobrevive=0.6; //Debería llamarse matingpool :P
 	double porcentajeMutacion=0.1;
-
+/*
 	char respuesta;
 	cout<<"¿Desea cambiar los valores específicos de la aplicación? [Y/N]"<<endl;
 	cin>>respuesta;
@@ -68,15 +68,15 @@ int main(int argc, char *argv[])
 		cout<<"¿Cual es el porcentaje de interés ganado por el retardo del pago? (en un rango de 0 a 1)"<<endl;
 		cin>>interes;
 	}
-
+*/
 	int TC = 5;
 	int CC = 3;
 	int TT = 1;
 	int CT = 0;
-
+/*
 	cout<<"¿Desea cambiar los valores de la matriz de pesos??[Y/N]"<<endl;
 	cin>>respuesta;
-	
+
 	if(toupper(respuesta)=='Y')
 	{
 		cout<<"¿Cual es mi ganancia si yo traiciono y mi compañero coopera?"<<endl;
@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
 		cout<<"¿Cual es mi ganancia si yo coopero y mi compañero traiciona?"<<endl;
 		cin>>CT;
 	}
-	
+	*/
 	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados, retardoPago, repartoPago, interes);
 	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
-	
+
 	cout<<endl<<"--------------------------------------------------------------------"<<endl;
 	cout<<"----------------------   Población Inicial   -----------------------"<<endl;
 	cout<<"--------------------------------------------------------------------"<<endl<<endl;
@@ -113,5 +113,5 @@ int main(int argc, char *argv[])
 	objPrisionero->imprimirTablaEstadosMejor();
 
     return 0;
-	
+
 }
