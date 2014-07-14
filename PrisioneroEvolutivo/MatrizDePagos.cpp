@@ -49,7 +49,7 @@ int MatrizDePagos::obtenerGananciaJugador(int jugadaPropia, int jugadaOponente)
                 }
                 break;
 
-				default: return 0; break; //Estos return 0 son para evitar el warning ERIKA:???
+		default: return 0; break; //Estos return 0 son para evitar el warning
     }
     return 0;
 }

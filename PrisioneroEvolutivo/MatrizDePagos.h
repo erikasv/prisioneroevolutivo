@@ -1,6 +1,8 @@
 #ifndef MATRIZDEPAGOS_H
 #define MATRIZDEPAGOS_H
 
+#include <math.h>
+
 class MatrizDePagos
 {
 	/*
@@ -20,7 +22,7 @@ class MatrizDePagos
 	public:
 		MatrizDePagos(int T, int R, int P, int S);
 		~MatrizDePagos();
-
+		
 		int obtenerGananciaJugador(int jugadaPropia, int jugadaOponente);
 };
 

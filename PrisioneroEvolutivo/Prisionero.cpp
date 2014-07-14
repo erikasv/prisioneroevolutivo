@@ -8,14 +8,17 @@
 * Contructor
 * Inicializa los jugadores
 */
-Prisionero::Prisionero(int numeroJugadores, int numMaximoEstados)
+Prisionero::Prisionero(int numeroJugadores, int numMaximoEstados, int retardoPagoIN, double repartoPagoIN, double interesIN)
 {
+	retardoPago = retardoPagoIN;
+	repartoPago = repartoPagoIN;
+	interes = interesIN;
 	/*
 	* Crear jugadores e inicializar su máquina de estados
 	*/
 	for(int i=0; i<numeroJugadores; i++)
 	{
-		Jugador* tmp = new Jugador(numMaximoEstados);
+		Jugador* tmp = new Jugador(numMaximoEstados, retardoPago, interes);
 		tmp->iniciarJugador();
 		jugadores.append(tmp);
 		//cout << jugadores.at(i) <<endl;
@@ -48,33 +51,93 @@ void Prisionero::iniciarMatrizDePagos(int T, int R, int P, int S)
 */
 void Prisionero::jugar(int cantidadDeJuegos)
 {
-	for(int i=0; i<totalDeJugadores; i++)
+  QVector<Jugador*> grupoA, grupoB;
+  for(int i=0; i<totalDeJugadores; i++)
+  {
+    Jugador * jugadorA = jugadores.at(i);
+    jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente(); //Jugador debería tener el metodo resetearEstadoPresente() y él hacer el llamado a la máquina de estados.
+    jugadorA->asignarRecienJugo(true);
+    
+    grupoA=obtenerJugadoresGrupo(jugadorA->obtenerGrupo());
+    
+    for(int j=i+1; j<totalDeJugadores; j++)
+    {
+      Jugador * jugadorB = jugadores.at(j);
+      jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
+      jugadorB->asignarRecienJugo(true);
+      
+      grupoB=obtenerJugadoresGrupo(jugadorB->obtenerGrupo());
+      
+      double pagoParteA=0.0;
+      double pagoParteB=0.0;
+      int gananciaA, gananciaB;
+      
+      for (int var = 0; var < cantidadDeJuegos; var++)
+      {
+	//Juguemos
+	//Jugada estado presente
+	int jugadaJugadorA = jugadorA->miJugada();
+	int jugadaJugadorB = jugadorB->miJugada();
+	
+	//Pasemos al proximo estado
+	jugadorA->jugadaOponente(jugadaJugadorB);
+	jugadorB->jugadaOponente(jugadaJugadorA);
+	
+	/** INTRODUCIR PARAMETROS AQUI*/
+	//Ganancias para cada uno
+	gananciaA=matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB);
+	gananciaB=matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA);
+	if (jugadorA->obtenerPagoInmediato())
 	{
-		for(int j=i+1; j<totalDeJugadores; j++)
-		{
-			Jugador * jugadorA = jugadores.at(i);
-			Jugador * jugadorB = jugadores.at(j);
-			jugadorA->obtenerMaquinaEstados()->resetearEstadoPresente(); //Jugador debería tener el metodo resetearEstadoPresente() y él hacer el llamado a la máquina de estados.
-			jugadorB->obtenerMaquinaEstados()->resetearEstadoPresente();
-			
-			for (int var = 0; var < cantidadDeJuegos; var++)
-			{
-				//Juguemos
-				//Jugada estado presente
-				int jugadaJugadorA = jugadorA->miJugada();
-				int jugadaJugadorB = jugadorB->miJugada();
-				
-				//Pasemos al proximo estado
-				jugadorA->jugadaOponente(jugadaJugadorB);
-				jugadorB->jugadaOponente(jugadaJugadorA);
-
-				/** INTRODUCIR PARAMETROS AQUI*/
-				//Ganancias para cada uno
-				jugadorA->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB));
-				jugadorB->agregarGanancia(matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA));                
-			}
-		}
+	  jugadorA->agregarGanancia(gananciaA);
 	}
+	else{
+	  pagoParteA+=gananciaA*repartoPago;
+	}
+	
+	if(jugadorB->obtenerPagoInmediato())
+	{
+	  jugadorB->agregarGanancia(gananciaB);
+	}
+	else
+	{
+	  pagoParteB+=gananciaB*repartoPago;
+	}
+      }
+      pagoParteA/=(grupoA.size() - 1);
+      pagoParteB/=(grupoB.size() - 1);
+      
+      //Pagar a los demás miembros del grupo
+      for(int k=0; k<grupoA.size(); k++)
+      {
+	if( !grupoA.at(k)->obtenerRecienJugo())
+	{
+	  grupoA.at(k)->asignarPagoExtra(pagoParteA);
+	}
+      }
+      
+      for(int k=0; k<grupoB.size(); k++)
+      {
+	if( !grupoB.at(k)->obtenerRecienJugo())
+	{
+	  grupoB.at(k)->asignarPagoExtra(pagoParteB);
+	}
+      }
+    }
+  }
+}
+
+QVector<Jugador*> Prisionero::obtenerJugadoresGrupo(int grupo)
+{
+  QVector<Jugador*> result=QVector<Jugador*>(0);
+  for(int i=0; i<totalDeJugadores;i++)
+  {
+    if(jugadores.at(i)->obtenerGrupo() == grupo)
+    {
+      result.append(jugadores.at(i));
+    }
+  }
+  return result;
 }
 
 /**QUITAR ESTA FUNCIÓN, REDUCIR EL NÚMERO MÁXIMO DE ESTADOS PARA EVITAR QUE LAS 
@@ -137,7 +200,7 @@ void Prisionero::limpiarEstadosJugadores()
 
 void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
 {
-	iniciarMatrizDePagos(TC, CC, TT, CT);
+	iniciarMatrizDePagos(TC, CC, TT, CT); 
 	jugar(cantidadDeJuegos);
 	limpiarEstadosJugadores();
 }
@@ -160,7 +223,7 @@ void Prisionero::reducirPoblacion(int numeroSobrevivientes)
 
 	//Si tiene menos estados que el promedio aumenta su ganacia con un porcentaje de la que tenía antes, si tiene más la disminuye en ese porcentaje
 	for (int i = 0; i < jugadores.size(); ++i)
-		jugadores.at(i)->agregarGanancia(0.1*((numEstadosPromedio-(double)(jugadores.at(i)->obtenerNumeroEstados()))/(double)maximoEstados)*jugadores.at(i)->obtenerGanancia());
+		jugadores.at(i)->asignarCastigo(0.1*((numEstadosPromedio-(double)(jugadores.at(i)->obtenerNumeroEstados()))/(double)maximoEstados)*jugadores.at(i)->obtenerGanancia());
 
 	//	Hace un llamado a ordenar los jugadores
 	jugadores = ordenar(jugadores);
@@ -176,80 +239,79 @@ void Prisionero::reducirPoblacion(int numeroSobrevivientes)
  */
 void Prisionero::cruzarJugadores(int tamanoFinalPoblacion)
 {
-	int tamanoActualPoblacion = jugadores.size(); //Esto no es igual a totalDeJugadores???
-	int numEstadosA=0, numEstadosB=0, numEstadosC=0, jugadorA, jugadorB, tmp;
+  int tamanoActualPoblacion = jugadores.size();
+  int numEstadosA=0, numEstadosB=0, numEstadosC=0, jugadorA, jugadorB, tmp;
 
-	for (int i = 0; i < totalDeJugadores; ++i)
-	{
-		jugadores.at(i)->resetearGanancia();
-	}
+  for (int i = 0; i < totalDeJugadores; ++i)
+  {
+    jugadores.at(i)->resetearGanancia();
+  }
+  for (int i = 0; i < tamanoFinalPoblacion; ++i)
+  {
+    jugadorA = (1 + rand() % tamanoActualPoblacion) - 1;
+    jugadorB = (1 + rand() % tamanoActualPoblacion) - 1;
 
-	for (int i = 0; i < tamanoFinalPoblacion; ++i)
-	{
-		jugadorA = (1 + rand() % tamanoActualPoblacion) - 1;
-		jugadorB = (1 + rand() % tamanoActualPoblacion) - 1;
+    numEstadosA = jugadores.at(jugadorA)->obtenerNumeroEstados();
+    numEstadosB = jugadores.at(jugadorB)->obtenerNumeroEstados();
 
-		numEstadosA = jugadores.at(jugadorA)->obtenerNumeroEstados();
-		numEstadosB = jugadores.at(jugadorB)->obtenerNumeroEstados();
+    //Esto hace que el jugador A sea el de la maquina de estados mas pequena
+    if(numEstadosA>numEstadosB)
+    {
+      tmp=numEstadosB;
+      numEstadosB=numEstadosA;
+      numEstadosA=tmp;
+      tmp=jugadorB;
+      jugadorB=jugadorA;
+      jugadorA=tmp;
+    }
 
-		//Esto hace que el jugador A sea el de la maquina de estados mas pequena
-		if(numEstadosA>numEstadosB)
-		{
-			tmp=numEstadosB;
-			numEstadosB=numEstadosA;
-			numEstadosA=tmp;
-			tmp=jugadorB;
-			jugadorB=jugadorA;
-			jugadorA=tmp;
-		}
+    MaquinaDeEstados* maquinaNueva = new MaquinaDeEstados();
 
-		MaquinaDeEstados* maquinaNueva = new MaquinaDeEstados();
-
-//		Aquí se calcula cuantos estados de cada jugador pasaran al hijo
-		numEstadosA = (1 + rand() % numEstadosA);
-		numEstadosB = (1 + rand() % numEstadosB);
-		numEstadosC = numEstadosA + numEstadosB;
+    //	Aquí se calcula cuantos estados de cada jugador pasaran al hijo
+    numEstadosA = (1 + rand() % numEstadosA);
+    numEstadosB = (1 + rand() % numEstadosB);
+    numEstadosC = numEstadosA + numEstadosB;
 
 
-		for (int j = 0; j < numEstadosA; ++j)
-		{
-			QVector<int> estado = jugadores.at(jugadorA)->obtenerMaquinaEstados()->obtenerEstado(j+1);
+    for (int j = 0; j < numEstadosA; ++j)
+    {
+      QVector<int> estado = jugadores.at(jugadorA)->obtenerMaquinaEstados()->obtenerEstado(j+1);
 
-			int PEC = estado.at(2);
-			int PET = estado.at(3);
+      int PEC = estado.at(2);
+      int PET = estado.at(3);
 
-			if(PEC>numEstadosC) PEC=numEstadosC;
-			if(PET>numEstadosC) PET=numEstadosC;
+      if(PEC>numEstadosC) PEC=numEstadosC;
+      if(PET>numEstadosC) PET=numEstadosC;
 
-			estado.replace(2, PEC );
-			estado.replace(3, PET );
+      estado.replace(2, PEC );
+      estado.replace(3, PET );
 
-			maquinaNueva->agregarEstados(estado);
-		}
+      maquinaNueva->agregarEstados(estado);
+    }
 
-		int totalEstadosB = jugadores.at(jugadorB)->obtenerNumeroEstados();
+    int totalEstadosB = jugadores.at(jugadorB)->obtenerNumeroEstados();
 
-		for (int j = totalEstadosB - numEstadosB; j < totalEstadosB; ++j)
-		{
-			QVector<int> estado = jugadores.at(jugadorB)->obtenerMaquinaEstados()->obtenerEstado(j+1);
-			numEstadosA++;
+    for (int j = totalEstadosB - numEstadosB; j < totalEstadosB; ++j)
+    {
+      QVector<int> estado = jugadores.at(jugadorB)->obtenerMaquinaEstados()->obtenerEstado(j+1);
+      numEstadosA++;
 
-			int PEC = estado.at(2)+ (numEstadosA - j) -1;
-			int PET = estado.at(3)+ (numEstadosA - j) -1;
+      int PEC = estado.at(2)+ (numEstadosA - j) -1;
+      int PET = estado.at(3)+ (numEstadosA - j) -1;
 
-			if(PEC<1) PEC=1;
-			if(PET<1) PET=1;
+      if(PEC<1) PEC=1;
+      if(PET<1) PET=1;
 
-			estado.replace(0, numEstadosA);
-			estado.replace(2, PEC );
-			estado.replace(3, PET );
+      estado.replace(0, numEstadosA);
+      estado.replace(2, PEC );
+      estado.replace(3, PET );
 
-			maquinaNueva->agregarEstados(estado);
-		}
+      maquinaNueva->agregarEstados(estado);
+    }
 
-		jugadores.append(new Jugador(maquinaNueva,numEstadosC));
-	}
-	totalDeJugadores=jugadores.size();
+    jugadores.append(new Jugador(maquinaNueva,numEstadosC,jugadores.at(jugadorB)->obtenerPagoInmediato()));
+  }
+  totalDeJugadores=jugadores.size();
 }
 
 /*
@@ -259,39 +321,44 @@ void Prisionero::cruzarJugadores(int tamanoFinalPoblacion)
  */
 void Prisionero::mutarJugadores(double porcentajeMutacion)
 {
-	int totalMutaciones = (int)(porcentajeMutacion*totalDeJugadores);
-	int jugadorMutar, numEstados, estadoMutar, estadoCopera, salidaEstado, estadoTraiciona;
+  int totalMutaciones = (int)(porcentajeMutacion*totalDeJugadores);
+  int jugadorMutar, numEstados, estadoMutar, estadoCopera, salidaEstado, estadoTraiciona;
 
-	for (int i = 0; i < totalMutaciones; ++i)
-	{
-		jugadorMutar = (1 + rand() % totalDeJugadores) - 1;
-		numEstados   = jugadores.at(jugadorMutar)->obtenerNumeroEstados();
-		estadoMutar  = (1 + rand() % numEstados);
+  for (int i = 0; i < totalMutaciones; ++i)
+  {
+    jugadorMutar = (1 + rand() % totalDeJugadores) - 1;
+    numEstados   = jugadores.at(jugadorMutar)->obtenerNumeroEstados();
+    estadoMutar  = (1 + rand() % (numEstados + 1));//Uno más para incluir el gen que decide si el pago se atrasa o no
 
-		QVector<int> estado = jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->obtenerEstado(estadoMutar);
+    if(estadoMutar == numEstados + 1){
+      jugadores.at(jugadorMutar)->mutarPagoInmediato();
+    }
+    else{
+      QVector<int> estado = jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->obtenerEstado(estadoMutar);
 
-		salidaEstado = (estado.at(1)==0)? 1 : 0;
-		estadoCopera = (1 + (rand() % (numEstados + 1)));
-		estadoTraiciona = (1 + (rand() % (numEstados + 1)));
+      salidaEstado = (estado.at(1)==0)? 1 : 0;
+      estadoCopera = (1 + (rand() % (numEstados + 1)));
+      estadoTraiciona = (1 + (rand() % (numEstados + 1)));
 
-		estado.replace(1,salidaEstado);
-		estado.replace(2,estadoCopera);
-		estado.replace(3,estadoTraiciona);
-		jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->editarEstados(estado);
+      estado.replace(1,salidaEstado);
+      estado.replace(2,estadoCopera);
+      estado.replace(3,estadoTraiciona);
+      jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->editarEstados(estado);
 
-		if(estadoCopera>numEstados || estadoTraiciona>numEstados)
-		{
-			numEstados++;
-			int * estadoNuevo = new int[4];
+      if(estadoCopera>numEstados || estadoTraiciona>numEstados)
+      {
+	numEstados++;
+	int * estadoNuevo = new int[4];
 
-			estadoNuevo[0] = numEstados;
-			estadoNuevo[1] = (1 + rand() % 2) - 1; //Numeros de 0 a 1
-			estadoNuevo[2] = (1 + rand() % numEstados);
-			estadoNuevo[3] = (1 + rand() % numEstados);
+	estadoNuevo[0] = numEstados;
+	estadoNuevo[1] = (1 + rand() % 2) - 1; //Numeros de 0 a 1
+	estadoNuevo[2] = (1 + rand() % numEstados);
+	estadoNuevo[3] = (1 + rand() % numEstados);
 
-			jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->agregarEstados(estadoNuevo);
-		}
-	}
+	jugadores.at(jugadorMutar)->obtenerMaquinaEstados()->agregarEstados(estadoNuevo);
+      } 
+    }
+  }
 }
 
 void Prisionero::evolucionar(int numeroGeneraciones, int numeroJugadores, int cantidadDeJuegos, double porcentajeSobrevive, double porcentajeMutacion)

@@ -5,12 +5,28 @@
  */
  #include "Jugador.h"
  
-Jugador::Jugador(int numMaximoEstados)
+Jugador::Jugador(int numMaximoEstados, int retardoPagoIN, double interesIN)
 {
 	maquinaDeEstados = new MaquinaDeEstados();
 	numeroEstados = rand()%numMaximoEstados + 1;
 	gananciaJugador = 0;
 	estado = new Estado(numeroEstados);
+	retardoPago=retardoPagoIN;
+	interes=interesIN;
+	recienJugo=false;
+	grupo = (int)rand()%10; //Es probable que sea necesario pasar el rango como entrada
+	
+	//Vector para pagar asignar el pago de las partidas anteriores
+	pagoInmediato=(int)rand()%2;
+	if(pagoInmediato){
+	  pagos= QVector<int>(0);
+	}
+	else{
+	  pagos= QVector<int>(retardoPago);
+	  for (int i=0;i<retardoPago;i++){
+	    pagos[i]=0;
+	  }
+	}
 }
 
 Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN)
@@ -19,6 +35,19 @@ Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN)
 	numeroEstados=numeroEstadosIN;
 	gananciaJugador=0;
 	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
+	grupo = (int)rand()%10;
+	recienJugo=false;
+}
+
+Jugador::Jugador(MaquinaDeEstados *maquinaIn, int numeroEstadosIN, bool desicionPadre)
+{
+	maquinaDeEstados=maquinaIn;
+	numeroEstados=numeroEstadosIN;
+	gananciaJugador=0;
+	estado = new Estado(numeroEstados); //Por lógica de la aplicación nunca se usa
+	pagoInmediato=desicionPadre;
+	grupo = (int)rand()%10;
+	recienJugo=false;
 }
 
 Jugador::~Jugador()
@@ -30,7 +59,7 @@ Jugador::~Jugador()
  */
 void Jugador::jugadaOponente(int jugada)
 {
-    maquinaDeEstados->irProximoEstado(jugada);
+	maquinaDeEstados->irProximoEstado(jugada);
 }
 
 /*
@@ -39,6 +68,34 @@ void Jugador::jugadaOponente(int jugada)
 int Jugador::miJugada()
 {
 	return maquinaDeEstados->obtenerSalidaEstadoPresente();
+}
+
+/*
+* Este método sirve para mutar la decisión del pago inmediato
+*/
+void Jugador::mutarPagoInmediato()
+{
+  pagoInmediato=(int)rand()%2;
+}
+
+bool Jugador::obtenerPagoInmediato()
+{
+  return pagoInmediato;
+}
+
+bool Jugador::obtenerRecienJugo()
+{
+  return recienJugo;
+}
+
+int Jugador::obtenerGrupo()
+{
+  return grupo;
+}
+
+void Jugador::asignarRecienJugo(bool val)
+{
+  recienJugo=val;
 }
 
 /*
@@ -64,7 +121,25 @@ int Jugador::miJugada()
  */
 void Jugador::agregarGanancia(int ganancia)
 {
+  //Modificada la ganancia asignada en cada juego.
+  if(pagoInmediato){
     gananciaJugador+=ganancia;
+  }
+  else{
+    gananciaJugador+=pagos[0]+(pagos[0]*interes); //Se asume que el interés es por el tiempo de retraso, no por unidad de tiempo.
+    pagos.pop_front();
+    pagos.append(ganancia);
+  }
+}
+
+void Jugador::asignarCastigo(int valor)
+{
+	gananciaJugador+=valor;
+}
+
+void Jugador::asignarPagoExtra(double pago)
+{
+  gananciaJugador+=pago;
 }
 
 /*
@@ -86,6 +161,10 @@ int Jugador::obtenerGanancia()
 void Jugador::resetearGanancia()
 {
 	gananciaJugador=0;
+	
+	for (int i=0;i<pagos.size();i++){
+	  pagos[i]=0;
+	}
 }
 
 /*
