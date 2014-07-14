@@ -122,7 +122,7 @@ void Jugador::asignarRecienJugo(bool val)
 void Jugador::agregarGanancia(int ganancia)
 {
   //Modificada la ganancia asignada en cada juego.
-  if(!pagoInmediato){
+  if(pagoInmediato){
     gananciaJugador+=ganancia;
   }
   else{
@@ -162,7 +162,7 @@ void Jugador::resetearGanancia()
 {
 	gananciaJugador=0;
 	
-	for (int i=0;i<retardoPago;i++){
+	for (int i=0;i<pagos.size();i++){
 	  pagos[i]=0;
 	}
 }

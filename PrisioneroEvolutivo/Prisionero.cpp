@@ -82,12 +82,11 @@ void Prisionero::jugar(int cantidadDeJuegos)
 	//Pasemos al proximo estado
 	jugadorA->jugadaOponente(jugadaJugadorB);
 	jugadorB->jugadaOponente(jugadaJugadorA);
-
+	
 	/** INTRODUCIR PARAMETROS AQUI*/
 	//Ganancias para cada uno
 	gananciaA=matrizDePagos->obtenerGananciaJugador(jugadaJugadorA, jugadaJugadorB);
 	gananciaB=matrizDePagos->obtenerGananciaJugador(jugadaJugadorB, jugadaJugadorA);
-	
 	if (jugadorA->obtenerPagoInmediato())
 	{
 	  jugadorA->agregarGanancia(gananciaA);
@@ -96,7 +95,7 @@ void Prisionero::jugar(int cantidadDeJuegos)
 	  pagoParteA+=gananciaA*repartoPago;
 	}
 	
-	if(jugadorA->obtenerPagoInmediato())
+	if(jugadorB->obtenerPagoInmediato())
 	{
 	  jugadorB->agregarGanancia(gananciaB);
 	}
@@ -105,12 +104,11 @@ void Prisionero::jugar(int cantidadDeJuegos)
 	  pagoParteB+=gananciaB*repartoPago;
 	}
       }
-      
       pagoParteA/=(grupoA.size() - 1);
       pagoParteB/=(grupoB.size() - 1);
       
       //Pagar a los demás miembros del grupo
-      for(int k=0; j<grupoA.size(); k++)
+      for(int k=0; k<grupoA.size(); k++)
       {
 	if( !grupoA.at(k)->obtenerRecienJugo())
 	{
@@ -118,7 +116,7 @@ void Prisionero::jugar(int cantidadDeJuegos)
 	}
       }
       
-      for(int k=0; j<grupoB.size(); k++)
+      for(int k=0; k<grupoB.size(); k++)
       {
 	if( !grupoB.at(k)->obtenerRecienJugo())
 	{
@@ -131,7 +129,7 @@ void Prisionero::jugar(int cantidadDeJuegos)
 
 QVector<Jugador*> Prisionero::obtenerJugadoresGrupo(int grupo)
 {
-  QVector<Jugador*> result;
+  QVector<Jugador*> result=QVector<Jugador*>(0);
   for(int i=0; i<totalDeJugadores;i++)
   {
     if(jugadores.at(i)->obtenerGrupo() == grupo)
@@ -202,7 +200,7 @@ void Prisionero::limpiarEstadosJugadores()
 
 void Prisionero::inicializarPrisionero(int TC, int CC, int TT, int CT, int cantidadDeJuegos)
 {
-	iniciarMatrizDePagos(TC, CC, TT, CT);
+	iniciarMatrizDePagos(TC, CC, TT, CT); 
 	jugar(cantidadDeJuegos);
 	limpiarEstadosJugadores();
 }
@@ -248,7 +246,6 @@ void Prisionero::cruzarJugadores(int tamanoFinalPoblacion)
   {
     jugadores.at(i)->resetearGanancia();
   }
-
   for (int i = 0; i < tamanoFinalPoblacion; ++i)
   {
     jugadorA = (1 + rand() % tamanoActualPoblacion) - 1;

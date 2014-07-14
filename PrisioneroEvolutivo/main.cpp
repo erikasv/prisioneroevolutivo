@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
 	cout<<"¿Desea cambiar los valores de la matriz de pesos??[Y/N]"<<endl;
 	cin>>respuesta;
-
+	
 	if(toupper(respuesta)=='Y')
 	{
 		cout<<"¿Cual es mi ganancia si yo traiciono y mi compañero coopera?"<<endl;
@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
 		cout<<"¿Cual es mi ganancia si yo coopero y mi compañero traiciona?"<<endl;
 		cin>>CT;
 	}
-
+	
 	Prisionero * objPrisionero = new Prisionero(numeroJugadores,numeroInicialEstados, retardoPago, repartoPago, interes);
 	objPrisionero->inicializarPrisionero(TC,CC,TT,CT,cantidadDeJuegos); //Se podrían pasar los valores T>C>P>S directamente, me parece más claro
-
+	
 	cout<<endl<<"--------------------------------------------------------------------"<<endl;
 	cout<<"----------------------   Población Inicial   -----------------------"<<endl;
 	cout<<"--------------------------------------------------------------------"<<endl<<endl;
